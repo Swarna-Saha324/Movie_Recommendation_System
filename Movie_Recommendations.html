@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Recommendations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:#111;
+      --accent:#7d0606;
+      --card-w:150px;
+      --card-h:220px;
+    }
+    *{box-sizing:border-box}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+      font-family: "Georgia", serif;
+      padding-bottom: 60px;
+    }
+    header {
+      background: var(--accent);
+      height: 80px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0 40px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    nav ul li a:hover {
+      color: #ddd;
+    }
+    main {
+      padding-top: 120px;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+    h1 {
+      font-family: "Agbalumo", cursive;
+      font-size: 48px;
+      font-weight: 400;
+      margin: 0 0 10px 0;
+    }
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin: 10px 0 24px 0;
+      gap: 8px;
+    }
+    input[type="text"] {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      width: 320px;
+      background: #fff;
+      color: #000;
+    }
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: "Georgia", serif;
+      transition: background 0.2s;
+    }
+    button:hover {
+      filter: brightness(1.05);
+    }
+    .movie-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--card-w), 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .poster {
+      width: var(--card-w);
+      height: var(--card-h);
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s;
+      display: block;
+      background: #222;
+    }
+    .poster:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    .movie-card {
+      width: var(--card-w);
+      display: grid;
+      gap: 6px;
+      justify-items: start;
+    }
+    .movie-title {
+      font-size: 13px;
+      margin: 0;
+      color: #fff;
+      width: var(--card-w);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #searchResults { display: none; margin-top: 20px; }
+    #searchResults h2 { margin-bottom: 12px; }
+
+    @media (max-width: 520px) {
+  header { padding: 0 16px; height: 64px; }
+  nav ul { gap: 12px; }
+  nav ul li a { font-size: 0.95rem; }
+  .search-container { gap: 8px; }
+  input[type="text"] {
+    width: 100%;
+    font-size: 15px;
+    padding: 10px 12px;
+  }
+  button {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 16px;
+  }
+  /* reduce card spacing for small screens */
+  .movie-row { gap: 12px; }
+  .movie-title { font-size: 12px; }
+
+  /* make sure search results and categories use full width */
+  #categories, #searchResults { width: 100%; }
+}
+
+/* larger screens: increase density */
+@media (min-width: 1400px) {
+  :root {
+    --card-w-max: 260px;
+    --card-h-max: 360px;
+  }
+  main { max-width: 1300px; margin: 0 auto; }
+}
+
+/* small polish: keep images responsive when container shrinks */
+.movie-card img.poster {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 2/3;
+}
+
+/* ensure result area spacing remains consistent */
+#searchResults { margin-top: 20px; }
+
+/* accessibility: increase hit area for small touch screens */
+.poster, .movie-title {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+}
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('Home') }}">Home</a></li>
+        <li><a href="{{ url_for('admin_panel') }}">Admin</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Movie Recommendations</h1>
+    <div class="search-container">
+      <input type="text" id="movieSearch" placeholder="Search movies..." />
+      <button id="searchBtn">Search</button>
+      <button id="clearBtn" title="Show categories">Show All</button>
+    </div>
+
+    <div id="categories">
+      <div class="movie-row" id="allMovies"></div>
+    </div>
+
+    <div id="searchResults">
+      <h2>Search Results</h2>
+      <div id="resultMovies" class="movie-row"></div>
+    </div>
+  </main>
+
+  <script>
+  const allMoviesDiv = document.getElementById("allMovies");
+  const categoriesDiv = document.getElementById("categories");
+  const searchResultsDiv = document.getElementById("searchResults");
+  const resultBox = document.getElementById("resultMovies");
+  const searchBtn = document.getElementById("searchBtn");
+  const clearBtn = document.getElementById("clearBtn");
+  const movieInput = document.getElementById("movieSearch");
+
+  const allMovies = {{ movies|tojson }};
+  const TMDB_KEY = "a3e6e7e2eccefd2b27bb909e4d6b7095"; // 🟢 Replace with your TMDB key
+
+  // Random 32 movies
+  function getRandomMovies(arr, count = 32) {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
+  // Fetch poster from TMDB
+  async function getPoster(title) {
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`;
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.results && data.results[0] && data.results[0].poster_path) {
+        return `https://image.tmdb.org/t/p/w500${data.results[0].poster_path}`;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    // fallback
+    return `https://via.placeholder.com/300x440?text=${encodeURIComponent(title)}`;
+  }
+
+  // Render random 32 movies (visible to all)
+  async function renderAllMovies() {
+    const selected = getRandomMovies(allMovies, 32);
+    allMoviesDiv.innerHTML = "";
+
+    for (const title of selected) {
+      const poster = await getPoster(title);
+      const card = document.createElement("div");
+      card.className = "movie-card";
+      card.innerHTML = `
+        <img class="poster" src="${poster}" alt="${title}">
+        <p class="movie-title" title="${title}">${title}</p>
+      `;
+      allMoviesDiv.appendChild(card);
+    }
+  }
+
+  // Search recommendation (only if logged in)
+  async function doSearch() {
+    const q = movieInput.value.trim();
+    if (!q) {
+      alert("Please enter a movie name.");
+      return;
+    }
+
+    const response = await fetch("/recommend", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ movie: q }),
+    });
+
+    // If user not logged in
+    if (response.status === 401) {
+      alert("Please sign in to view movie recommendations.");
+      window.location.href = "/Login";// redirect after OK
+      return;
+    }
+
+
+    const data = await response.json();
+    categoriesDiv.style.display = "none";
+    searchResultsDiv.style.display = "block";
+    resultBox.innerHTML = "";
+
+    if (data.error) {
+      resultBox.innerHTML = `<p style="color:#ff6b6b;font-size:18px;">${data.error}</p>`;
+      return;
+    }
+
+    for (const m of data.results) {
+      const poster = await getPoster(m.title);
+      const card = document.createElement("div");
+      card.className = "movie-card";
+      card.innerHTML = `
+        <img class="poster" src="${poster}" alt="${m.title}">
+        <p class="movie-title" title="${m.title}">${m.title}</p>
+      `;
+      resultBox.appendChild(card);
+    }
+  }
+
+  clearBtn.addEventListener("click", () => {
+    movieInput.value = "";
+    categoriesDiv.style.display = "block";
+    searchResultsDiv.style.display = "none";
+    renderAllMovies();
+  });
+
+  searchBtn.addEventListener("click", doSearch);
+  movieInput.addEventListener("keydown", e => { if (e.key === "Enter") doSearch(); });
+
+  renderAllMovies();
+</script>
+
+</body>
+</html>
