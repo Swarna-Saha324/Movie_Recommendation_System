@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Recommendation System</title>
+
+  <style>
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Georgia", serif;
+    }
+
+    body {
+      height: 100vh;
+      background: url("https://media.licdn.com/dms/image/v2/D5612AQGy6sM0SJAdxg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1693150322893?e=2147483647&v=beta&t=2_aostRG53XjmjiS9FSI9Jcfn73tsoq3uFate9rV0XE") 
+      no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      color: white;
+    }
+
+    /* Overlay to darken background */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 0;
+    }
+
+    /*  Navigation  */
+    nav {
+      width: 100%;
+      height: 80px;
+      background-color: #7d0606;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    nav h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    nav h1 a {
+      text-decoration: none;
+      color: #ffffff;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    /*  Content Section  */
+    .content {
+      position: relative;
+      z-index: 2;
+      top: 35%;
+      left: 10%;
+      max-width: 600px;
+    }
+
+    .content p {
+      font-size: 2rem;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: #f2b6b6;
+    }
+
+    .continue {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #ddd;
+      font-style: italic;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /*  Responsive Design  */
+    /* Tablets and small laptops */
+    @media (max-width: 992px) {
+      .content {
+        top: 30%;
+        left: 5%;
+        max-width: 500px;
+      }
+
+      nav ul {
+        gap: 18px;
+      }
+
+      nav h1 a {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* Mobile Devices */
+    @media (max-width: 600px) {
+      nav {
+        padding: 12px 20px;
+      }
+
+      nav h1 a {
+        font-size: 1.2rem;
+      }
+
+      nav ul {
+        gap: 10px;
+      }
+
+      nav ul li a {
+        font-size: 0.95rem;
+      }
+
+      .content {
+        top: 25%;
+        left: 5%;
+        max-width: 90%;
+      }
+
+      .content p {
+        font-size: 1.4rem;
+        line-height: 1.4;
+      }
+
+      .continue {
+        font-size: 1rem;
+      }
+    }
+
+    /* Extra Small Phones */
+    @media (max-width: 400px) {
+      nav {
+        flex-direction: column;
+        height: auto;
+        gap: 8px;
+        padding-bottom: 12px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .content p {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!--  Navigation  -->
+  <nav>
+    <h1><a href="#">Movie Recommendation System</a></h1>
+    <ul>
+      <li><a id="homeLink">Movie</a></li>
+      <li><a href="{{ url_for('Login') }}">Login</a></li>
+      <li><a href="{{ url_for('Logout') }}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!--  Main Content  -->
+  <div class="content">
+    <p>
+      "Stop searching,<br>
+      start watching<br>
+      <span class="highlight">personalized recommendations just for you</span>"
+    </p>
+    <span class="continue" id="openForm">— To be continue</span>
+  </div>
+
+  <!--  Scripts  -->
+  <script>
+    const openFormBtn = document.getElementById("openForm");
+    const homeLink = document.getElementById("homeLink");
+
+    openFormBtn.addEventListener("click", () => {
+      window.location.href = "/Movie_Recommendations";
+    });
+
+    homeLink.addEventListener("click", () => {
+      window.location.href = "/Movie_Recommendations";
+    });
+  </script>
+</body>
+</html>

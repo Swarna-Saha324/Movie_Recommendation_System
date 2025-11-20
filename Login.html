@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie App</title>
+
+  <!-- MAIN STYLES -->
+  <style>
+
+body {
+  margin: 0;
+  font-family: 'Georgia', serif;
+  background: url("https://media.licdn.com/dms/image/v2/D5612AQGy6sM0SJAdxg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1693150322893?e=2147483647&v=beta&t=2_aostRG53XjmjiS9FSI9Jcfn73tsoq3uFate9rV0XE") 
+              no-repeat center center fixed;
+  background-size: cover;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+/*  TOP BAR  */
+
+.top-bar {
+  width: 100%;
+  height: 80px;
+  background-color: #7d0606;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  cursor: pointer;
+}
+
+.top-bar h2 {
+  color: white;
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw + 0.6rem, 1.5em);
+  margin: 0;
+}
+
+/*  NAVBAR  */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-family: 'Merriweather', serif;
+  margin-left: 20px;
+  transition: color 0.25s, transform 0.15s;
+}
+
+.navbar a:hover {
+  color: #f5c2c2;
+  transform: translateY(-1px);
+}
+
+/*  POPUP OVERLAYS  */
+
+.overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  padding: 48px 36px;
+  border-radius: 28px;
+  text-align: center;
+  width: min(420px, 92%);
+  display: none;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+}
+
+.active { display: block; }
+
+h1 {
+  font-size: clamp(1.4rem, 2.6vw + 0.5rem, 2em);
+  margin-bottom: 26px;
+  font-style: italic;
+  color: white;
+}
+
+/*  BUTTONS  */
+
+.btn-group {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+button {
+  background-color: #7d0606;
+  color: white;
+  border: none;
+  padding: clamp(8px, 1.4vw + 6px, 12px) 
+           clamp(16px, 2.2vw + 10px, 28px);
+  font-size: clamp(1rem, 1.3vw + 0.6rem, 1.2em);
+  border-radius: 10px;
+  cursor: pointer;
+  font-style: italic;
+  transition: transform 0.18s, background-color 0.18s;
+  min-width: 120px;
+}
+
+button:hover {
+  background-color: #9b0a0a;
+  transform: scale(1.05);
+}
+
+/*  INPUT FIELDS  */
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #7d0606;
+  font-size: clamp(.95rem, .9vw + .6rem, 1em);
+  background: rgba(255,255,255,0.95);
+}
+
+label {
+  color: white;
+  font-size: clamp(.85rem, .6vw + .6rem, .95em);
+}
+
+/*  EXTRA OPTIONS  */
+
+.extra-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  color: white;
+}
+
+/*  LINKS  */
+
+.link-text {
+  margin-top: 12px;
+  color: white;
+  font-size: clamp(.82rem, .5vw + .6rem, .9em);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-text:hover { color: #f5c2c2; }
+
+/*  TERMS  */
+
+.terms-container { margin: 12px 0 6px; }
+
+.terms-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.terms-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #7d0606;
+}
+
+.terms-text {
+  color: white;
+  font-size: clamp(.85rem, .6vw + .6rem, .95em);
+}
+
+/*  RESPONSIVE  */
+
+@media (max-width: 460px) {
+  .top-bar { height: 64px; padding: 0 14px; }
+  .overlay { padding: 28px 18px; width: calc(100% - 28px); }
+  button { min-width: 100px; padding: 10px 14px; }
+}
+
+@media (min-width: 460px) and (max-width: 900px) {
+  .overlay { width: min(420px, 86%); padding: 40px 30px; }
+}
+
+@media (min-width: 1200px) {
+  .overlay { width: 420px; padding: 56px 48px; }
+}
+
+/*  FOCUS OUTLINES  */
+
+button:focus,
+input:focus,
+a:focus {
+  outline: 3px solid rgba(125,6,6,0.25);
+  outline-offset: 2px;
+}
+
+/* Global box-sizing */
+*, *::before, *::after { box-sizing: inherit; }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <header>
+    <div class="top-bar">
+      <h2 onclick="goBack()">Movie Recommendation System</h2>
+      <nav class="navbar">
+        <a href="{{ url_for('Home') }}">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ROLE SELECTION -->
+  <div id="chooseRole" class="overlay active">
+    <h1>WELCOME</h1>
+    <div class="btn-group">
+      <button onclick="chooseRole('user')">User</button>
+      <button onclick="chooseRole('admin')">Admin</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP MENU -->
+  <div id="welcome" class="overlay">
+    <h1 id="roleTitle"></h1>
+    <div class="btn-group">
+      <button onclick="showPage('signin')">Sign in</button>
+      <button onclick="showPage('signup')">Sign up</button>
+    </div>
+  </div>
+
+  <!-- SIGN IN -->
+  <div id="signin" class="overlay">
+    <h1>Sign In</h1>
+
+    <form id="loginForm" action="" method="post">
+      <input type="email" id="loginEmail" placeholder="Email" required><br>
+      <input type="password" id="loginPassword" placeholder="Password" required><br>
+
+      <div class="extra-options">
+        <label><input type="checkbox" id="rememberMe"> Remember me</label>
+        <span class="link-text" onclick="forgotPassword()">Forgot Password?</span>
+      </div>
+
+      <button type="submit">Sign in</button>
+    </form>
+
+    <div class="link-text" onclick="showPage('signup')">
+      Don't have an account? Sign up
+    </div>
+  </div>
+
+  <!-- SIGN UP -->
+  <div id="signup" class="overlay">
+    <h1>Sign Up</h1>
+
+    <form id="signupForm" action="" method="post">
+      <input type="text" id="signupUsername" placeholder="Username" required><br>
+      <input type="email" id="signupEmail" placeholder="Email" required><br>
+      <input type="password" id="signupPassword" placeholder="Password" required><br>
+
+      <div class="terms-container">
+        <div class="terms-row">
+          <input type="checkbox" id="agreeTerms" required />
+          <label for="agreeTerms" class="terms-text">
+            Agree to terms &amp; conditions
+          </label>
+        </div>
+      </div>
+
+      <button type="submit">Sign up</button>
+    </form>
+
+    <div class="link-text" onclick="showPage('signin')">
+      Already have an account? Sign in
+    </div>
+  </div>
+
+  <!-- MAIN SCRIPT -->
+  <script>
+    let currentRole = '';
+
+    /*  Select Role  */
+    function chooseRole(role) {
+      currentRole = role;
+      document.getElementById('chooseRole').classList.remove('active');
+      document.getElementById('welcome').classList.add('active');
+      document.getElementById('roleTitle').innerText =
+        role === 'admin' ? 'Welcome, Admin' : 'Welcome, User';
+    }
+
+    /*  Switch Overlay Pages  */
+    function showPage(pageId) {
+      document.querySelectorAll('.overlay')
+              .forEach(div => div.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    /*  Back Navigation  */
+    function goBack() {
+      const activePage = document.querySelector('.overlay.active').id;
+      if (activePage === 'signup' || activePage === 'signin') {
+        showPage('welcome');
+      } else if (activePage === 'welcome') {
+        showPage('chooseRole');
+      }
+    }
+
+    /*  Forgot Password  */
+    function forgotPassword() {
+      const email = prompt("Enter your email:");
+      if (!email) return;
+
+      fetch("/forgot_password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => alert(data.message || data.error))
+      .catch(() => alert("Something went wrong"));
+    }
+
+    /*  Login Handler  */
+    document.getElementById('loginForm')
+      .addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const endpoint = currentRole === 'admin' ? '/login_admin' : '/login_user';
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+        if (result.message && result.message.toLowerCase().includes("success")) {
+          window.location.href = "/Movie_Recommendations";
+        } else {
+          alert(result.error || "Login attempt failed");
+        }
+      });
+
+    /* Signup Handler */
+    document.getElementById('signupForm')
+      .addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('signupUsername').value;
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const endpoint = currentRole === 'admin' ? '/signup_admin' : '/signup_user';
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        const result = await response.json();
+        alert(result.message || 'Signup attempt complete');
+      });
+
+  </script>
+
+</body>
+</html>

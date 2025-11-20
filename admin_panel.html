@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+
+  <!-- Google Font: Agbalumo -->
+  <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #010101f2;
+      font-family: 'Merriweather', serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+
+    header {
+      background: #7a0d00;
+      height: 80px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 40px;
+      z-index: 1000;
+    }
+
+    header .logo {
+      font-family: 'MedievalSharp', cursive;
+      font-size: 1.8em;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    header nav a {
+      color: white;
+      font-family: 'Merriweather', serif;
+      font-size: 1.2em;
+      text-decoration: none;
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      margin-top: 70px;
+      height: calc(100vh - 70px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background-color: #000000;
+      border-right: 2px solid #181717ca;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+      gap: 40px;
+    }
+
+    .sidebar button {
+      background-color: #7a0d00;
+      color: white;
+      border: none;
+      border-radius: 40px;
+      font-size: 1.2em;
+      padding: 15px 30px;
+      width: 220px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Merriweather', serif;
+    }
+
+    .sidebar button:hover {
+      background-color: #a31808;
+    }
+
+    .sidebar button.active {
+      background-color: #a31808;
+      transform: scale(1.05);
+    }
+
+    /* Disabled buttons for non-admins */
+    .sidebar button:disabled {
+      background-color: #3a3a3a;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Content Area */
+    .content {
+      flex: 1;
+      padding: 60px;
+      overflow-y: auto;
+    }
+
+    .content-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+/* For Tablets (width <= 1024px) */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 250px;
+  }
+  .sidebar button {
+    width: 200px;
+    font-size: 1.1em;
+  }
+  .content {
+    padding: 40px;
+  }
+}
+
+/* For Mobile (width <= 768px) */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px;
+    gap: 20px;
+    justify-content: center;
+    border-right: none;
+    border-bottom: 2px solid #181717ca;
+  }
+
+  .sidebar button {
+    width: auto;
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 30px;
+  }
+
+  .content {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}
+
+/* For Extra Small Mobile (width <= 480px) */
+@media (max-width: 480px) {
+  header {
+    padding: 0 20px;
+  }
+  .logo {
+    font-size: 1.4em;
+  }
+  header nav a {
+    font-size: 1em;
+  }
+
+  .sidebar {
+    gap: 12px;
+  }
+
+  .sidebar button {
+    font-size: 0.9em;
+    padding: 10px 18px;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">Admin Panel</div>
+    <nav>
+      <a href="{{ url_for('Home') }}">Home</a>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <button class="active" onclick="showContent('user')">User Management</button>
+      <button onclick="showContent('movie')">Movie Management</button>
+      <button onclick="showContent('analytics')">Analytics</button>
+      <button onclick="showContent('settings')">Settings</button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content">
+      <div id="user" class="content-section active">
+        <h2>User Management</h2>
+        <p>Manage users, view profiles, and control access permissions from this section.</p>
+      </div>
+
+      <div id="movie" class="content-section">
+        <h2>Movie Management</h2>
+        <p>Add, update, or delete movie records and manage categories here.</p>
+      </div>
+
+      <div id="analytics" class="content-section">
+        <h2>Analytics</h2>
+        <p>View charts and performance metrics related to user activity and movie trends.</p>
+      </div>
+
+      <div id="settings" class="content-section">
+        <h2>Settings</h2>
+        <p>Configure system settings, update admin credentials, and manage preferences.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Show selected content section and highlight sidebar button
+    function showContent(sectionId) {
+      // Hide all content
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+      // Remove active from all buttons
+      document.querySelectorAll('.sidebar button').forEach(btn => btn.classList.remove('active'));
+      // Show the selected section
+      document.getElementById(sectionId).classList.add('active');
+      // Highlight active button
+      event.target.classList.add('active');
+    }
+    
+    // Disable sidebar buttons for non-admin users
+    {% if not is_admin %}
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.sidebar button').forEach(btn => {
+        btn.disabled = true;
+      });
+      const note = document.createElement('div');
+      note.style.marginTop = '20px';
+      note.style.color = '#ccc';
+      note.style.textAlign = 'center';
+      note.innerHTML = "View Only: You don't have admin permissions.";
+      document.querySelector('.sidebar').appendChild(note);
+    });
+    {% endif %}
+  </script>
+</body>
+</html>

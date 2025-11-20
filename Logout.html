@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout - Movie Recommendation System</title>
+
+  <!--BASIC PAGE STYLING -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Georgia", serif;
+    }
+
+    body {
+      height: 100vh;
+      background: url("https://media.licdn.com/dms/image/v2/D5612AQGy6sM0SJAdxg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1693150322893?e=2147483647&v=beta&t=2_aostRG53XjmjiS9FSI9Jcfn73tsoq3uFate9rV0XE")
+      no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      color: white;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 0;
+    }
+
+    /* NAVIGATION BAR */
+    nav {
+      width: 100%;
+      height: 80px;
+      background-color: #7d0606;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    nav h1 a {
+      text-decoration: none;
+      color: #ffffff;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    /*LOGOUT MESSAGE SECTION*/
+    .logout-container {
+      position: relative;
+      z-index: 2;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      transition: opacity 1s ease;
+    }
+
+    .logout-container.fade-out {
+      opacity: 0;
+    }
+
+    .logout-container h2 {
+      font-size: 2rem;
+      color: #f2b6b6;
+      margin-bottom: 15px;
+    }
+
+    .logout-container p {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 25px;
+    }
+
+    .logout-container a {
+      color: #ddd;
+      text-decoration: underline;
+      font-style: italic;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    /*RESPONSIVE DESIGN*/
+    @media (max-width: 768px) {
+      nav {
+        padding: 15px 20px;
+      }
+
+      nav h1 a {
+        font-size: 1.3rem;
+      }
+
+      nav ul {
+        gap: 15px;
+      }
+
+      nav ul li a {
+        font-size: 1rem;
+      }
+
+      .logout-container {
+        top: 50%;
+        width: 90%;
+      }
+
+      .logout-container h2 {
+        font-size: 1.7rem;
+      }
+
+      .logout-container p,
+      .logout-container a {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav {
+        flex-direction: column;
+        height: auto;
+        padding-bottom: 10px;
+        text-align: center;
+      }
+
+      nav ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .logout-container h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!--TOP NAVIGATION-->
+  <nav>
+    <h1><a href="{{ url_for('Home') }}">Movie Recommendation System</a></h1>
+    <ul>
+      <li><a href="{{ url_for('Home') }}">Home</a></li>
+      <li><a href="{{ url_for('Login') }}">Login</a></li>
+    </ul>
+  </nav>
+
+  <!--LOGOUT MESSAGE + REDIRECT-->
+
+  <div class="logout-container" id="logoutMessage">
+    <h2>You have been logged out successfully!</h2>
+    <p>Redirecting you to the login page...</p>
+    <a href="{{ url_for('Login') }}">Click here if not redirected</a>
+  </div>
+
+  <!--LOGOUT SCRIPT-->
+  <script>
+    // Clear local browser data
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Add fade-out animation
+    setTimeout(() => {
+      document.getElementById("logoutMessage").classList.add("fade-out");
+    }, 2000);
+
+    // Redirect after fade-out
+    setTimeout(() => {
+      window.location.href = "{{ url_for('Login') }}";
+    }, 3000);
+  </script>
+
+</body>
+</html>
