@@ -245,6 +245,7 @@
   </div>
 
   <script>
+    // Show selected content section and highlight sidebar button
     function showContent(sectionId) {
       // Hide all content
       document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
@@ -255,9 +256,9 @@
       // Highlight active button
       event.target.classList.add('active');
     }
-
+    
+    // Disable sidebar buttons for non-admin users
     {% if not is_admin %}
-    // Disable sidebar buttons and show notice for normal users
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.sidebar button').forEach(btn => {
         btn.disabled = true;
